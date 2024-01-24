@@ -36,7 +36,9 @@ fun MainScreen(){
             }) {
             Text(text = "Change Color")
         }
+
         Text(text = displayText)
+
         Button(onClick = {
             displayText = viewModel.blockApp()
         }) {
