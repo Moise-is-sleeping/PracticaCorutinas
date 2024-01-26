@@ -1,22 +1,41 @@
 package CorrutineButtons.ui
 
-class CorrutineViewModel {
-    private var redOrBlue = false
-    private var counter = 0
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-    fun buttonColor(): Long {
+class CorrutineViewModel :ViewModel(){
+    var redOrBlue by mutableStateOf(false)
+    var counter by mutableStateOf(0)
+    var message by mutableStateOf("")
+    var color by mutableStateOf(0xFF992D31)
+    var loadingg by mutableStateOf(true)
+
+    fun buttonColor() {
         if (redOrBlue){
             redOrBlue = false
-            return 0xFF992D31
+            color = 0xFF992D31
         }else{
             redOrBlue = true
-            return 0xFF2D4499
+            color = 0xFF2D4499
         }
     }
 
-    fun blockApp(): String {
-        counter +=1
-        Thread.sleep(5000)
-        return "Api response : $counter"
+    fun fetchData(){
+        counter+=1
+        viewModelScope.launch{
+            val result = withContext(Dispatchers.IO){
+                delay(5000)
+                "Api response : $counter"
+            }
+            message = result
+        }
     }
+
 }
