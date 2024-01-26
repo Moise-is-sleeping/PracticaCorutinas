@@ -1,5 +1,6 @@
 package CorrutineButtons.ui
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -15,7 +16,7 @@ class CorrutineViewModel :ViewModel(){
     var counter by mutableStateOf(0)
     var message by mutableStateOf("")
     var color by mutableStateOf(0xFF992D31)
-    var loadingg by mutableStateOf(true)
+    var loading by mutableStateOf(true)
 
     fun buttonColor() {
         if (redOrBlue){
@@ -28,14 +29,32 @@ class CorrutineViewModel :ViewModel(){
     }
 
     fun fetchData(){
-        counter+=1
+
         viewModelScope.launch{
+            try {
+                loading = true
+                callApi()
+            }catch (e:Exception){
+                print("Error : $e")
+            }finally {
+                loading = true
+            }
+
+        }
+    }
+   private suspend fun callApi(){
+        counter+=1
+        viewModelScope.launch {
             val result = withContext(Dispatchers.IO){
+                loading = false
                 delay(5000)
+                loading = true
                 "Api response : $counter"
             }
             message = result
         }
-    }
+   }
+
+
 
 }
